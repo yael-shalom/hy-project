@@ -3,11 +3,13 @@
 // import { Category } from '../models/category.model.js'
 // import path from 'path';
 
+// import { QUIZE } from '../models/Quiz.model.js'
 
 
-export async function getAllQuiz(req, res, next) {
+export async function getAllQuizes(req, res, next) {
 
-    try {
+    try 
+    {
         // קבלת כל המבחנים ממאגר הנתונים
         const quizzes = await Quiz.find();
 
@@ -15,11 +17,11 @@ export async function getAllQuiz(req, res, next) {
         res.json(quizzes);
     } 
     
-    catch (error) {
+    catch (error) 
+    {
         console.error('Error fetching quizzes:', error);
         res.status(500).json({ message: 'Server error' });
     }
 
 }
-
 
