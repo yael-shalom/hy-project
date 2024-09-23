@@ -1,0 +1,1 @@
+//התבנית של הפונקציות  היא: export, async, function - מקבלת req, res, next
