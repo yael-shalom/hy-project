@@ -3,7 +3,7 @@
 // import { Category } from '../models/category.model.js'
 // import path from 'path';
 
-// import { QUIZE } from '../models/Quiz.model.js'
+ import { Quiz } from '../models/quiz.model.js'
 
 
 export async function getAllQuizes(req, res, next) {
@@ -24,4 +24,5 @@ export async function getAllQuizes(req, res, next) {
     }
 
 }
+
 
