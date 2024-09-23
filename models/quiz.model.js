@@ -3,12 +3,16 @@ import { Schema, model } from "mongoose";
 const quizSchema = new Schema({
     //id - auto
     name: { type: String, required: true },
+
     categories: { type: [String], default: ["שונות"] },
+
     date: { type: Date, default: Date.now() },
+
     owner: {
         _id: { type: Schema.Types.ObjectId, ref: 'users' },
         name: String
     },
+
     questions: [{
         //id - auto
         content: { type: String, required: true },
@@ -19,6 +23,7 @@ const quizSchema = new Schema({
             score: { type: Number }
         }]
     }],
+    
 })
 
 export const Quiz = model('quizzes', quizSchema);
