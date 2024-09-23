@@ -6,7 +6,7 @@
  import { Quiz } from '../models/quiz.model.js'
 
 
-export async function getAllQuizes(req, res, next) {
+export async function getAllQuizzes(req, res, next) {
 
     try 
     {
