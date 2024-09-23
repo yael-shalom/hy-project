@@ -4,8 +4,10 @@ import { type } from "os";
 
 const quizSchema = new Schema({
     //id - auto
+    //id quiz creator
     name: {type: String, required: true},
     categories: {type: [String], default: ["שונות"]},
+    date: {type: Date, default:Date.now()},
     questions: [{
         //id - auto
         content: {type: String, required:true},
