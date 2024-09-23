@@ -19,8 +19,9 @@ export async function getAllQuizzes(req, res, next) {
     
     catch (error) 
     {
-        console.error('Error fetching quizzes:', error);
-        res.status(500).json({ message: 'Server error' });
+        next({ message: error.message, status: 500 })
+
+
     }
 
 }
