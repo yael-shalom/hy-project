@@ -16,7 +16,7 @@ const app = express();
 
 //יוצרים את ה-body של ה-req
 app.use(json()); 
-app.use(urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
 
 //עושה הדפסות שיהיה קל לדבג
 app.use(morgan("dev")); 
