@@ -2,25 +2,28 @@ import { Schema, model } from "mongoose";
 
 const quizSchema = new Schema({
     //id - auto
-    name: { type: String, required: true },
 
-    categories: { type: [String], default: ["שונות"] },
+    name: { type: String, required: true }, //quiz name
 
-    date: { type: Date, default: Date.now() },
+    categories: { type: [String], default: ["שונות"] }, //quiz categories
 
-    owner: {
-        _id: { type: Schema.Types.ObjectId, ref: 'users' },
-        name: String
+    date: { type: Date, default: Date.now() }, //creation date
+
+    owner: { //quiz owner
+        _id: { type: Schema.Types.ObjectId, ref: 'users' }, //owner id
+        name: String //owner name
     },
 
-    questions: [{
+    imageUrl: { type: String }, //quiz's image
+
+    questions: [{ //quiz's questions
         //id - auto
-        content: { type: String, required: true },
-        imageUrl: { type: String },
-        answers: [{
+        content: { type: String, required: true }, //question content
+        imageUrl: { type: String }, //question's image
+        answers: [{ //question answers
             //id - auto
-            content: { type: String, required: true },
-            score: { type: Number }
+            content: { type: String, required: true }, //answer content
+            score: { type: Number } //answer score
         }]
     }],
     
