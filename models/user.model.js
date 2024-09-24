@@ -23,6 +23,11 @@ const userSchema = new Schema({
             answerContent: {type: String}, //answer content
             score: {type: Number, min: 0}, //answer score
         }]
+    }],
+
+    createdQuizzes: [{ //quizzes created by the user
+        _id: {type: Schema.Types.ObjectId, ref: 'quizzes'}, //quiz id
+        name: {type: String}, //quiz name
     }]
 })
 
