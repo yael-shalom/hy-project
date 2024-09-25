@@ -4,8 +4,7 @@ import morgan from 'morgan';
 
 // my routes
 import userRouter from './routes/user.route.js';
-// import categoryRouter from './routes/category.route.js';
-// import recipeRouter from './routes/recipe.route.js';
+import quizRouter from './routes/quiz.route.js';
 
 import { pageNotFound, serverNotFound } from './middlewares/handleErrors.js';
 import 'dotenv/config';
@@ -27,13 +26,8 @@ app.use(morgan("dev"));
 //מאפשר גישה לכולם לפני ההגשה לשנות לנ"ל
 app.use(cors());
 
-// app.get('/', (req, res) => {
-//   res.send("wellcome");
-// });
-
 app.use("/users", userRouter);
-// app.use("/categories", categoryRouter);
-// app.use("/recipes",recipeRouter);
+app.use("/quizzes", quizRouter);
 
 //בשביל להעלות תמונות
 app.use('/images', express.static('uploads'))
