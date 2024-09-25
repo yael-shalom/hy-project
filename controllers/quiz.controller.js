@@ -9,6 +9,7 @@
 export async function getAllQuizzes(req, res, next) {
 
     try 
+    
     {
         // קבלת כל המבחנים ממאגר הנתונים
         const quizzes = await Quiz.find();
