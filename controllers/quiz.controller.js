@@ -79,8 +79,12 @@ import mongoose from 'mongoose';
 export async function addQuiz(req, res, next) {
     console.log("addQuiz");
     try {
-        const quizDataString = req.body.quiz; // הנחה שהנתונים מגיעים בצורה של מחרוזת JSON
-        const quizData = JSON.parse(quizDataString);
+        const quizData = req.body
+
+        //את זה לא צריךת הוא מתקבל בכל מקרה כאובייקט
+        // .quiz; // הנחה שהנתונים מגיעים בצורה של מחרוזת JSON
+        // const quizData = JSON.parse(quizDataString);
+        
         const imageName = req.file ? req.file.filename : null; // קבלת שם התמונה אם קיימת
         const { name, categories, owner, questions } = quizData;
 
@@ -96,14 +100,14 @@ export async function addQuiz(req, res, next) {
         // שמירה למסד הנתונים
         await newQuiz.save();
 
-        // טיפול בקטגוריות חדשות (אם יש)
-        const categoryPromises = newQuiz.categories.map(async category => {
-            // אם יש קטגוריות נוספות, ניתן לעדכן אותן במסד הנתונים כאן
-            // לדוגמה, אם יש מודל Category, ניתן לבדוק אם הקטגוריה קיימת ולהוסיף אותה
-            // (הקוד להוספת קטגוריה נשאר לך להוסיף בהתאם למבנה של הקטגוריות בפרויקט שלך)
-        });
-
-        await Promise.all(categoryPromises);
+        //לא צריך
+        // // טיפול בקטגוריות חדשות (אם יש)
+        // const categoryPromises = newQuiz.categories.map(async category => {
+        //     // אם יש קטגוריות נוספות, ניתן לעדכן אותן במסד הנתונים כאן
+        //     // לדוגמה, אם יש מודל Category, ניתן לבדוק אם הקטגוריה קיימת ולהוסיף אותה
+        //     // (הקוד להוספת קטגוריה נשאר לך להוסיף בהתאם למבנה של הקטגוריות בפרויקט שלך)
+        // });
+        // await Promise.all(categoryPromises);
 
         return res.status(201).json(newQuiz); // החזרת השאלון שנוסף
     } catch (error) {
