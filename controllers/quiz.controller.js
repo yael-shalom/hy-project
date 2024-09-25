@@ -45,34 +45,6 @@ export async function getQuizById(req, res, next) {
     }
 }
 
-export async function addQuiz(req, res, next) {
-    try {
-        const { name, categories, owner, imageUrl, questions } = req.body;
-
-        // בדיקה אם כל השדות הנדרשים קיימים
-        if (!name || !owner || !questions) {
-            return res.status(400).json({ message: 'שדות חובה חסרים' });
-        }
-
-        // יצירת שאלון חדש
-        const newQuiz = new Quiz({
-            name,
-            categories,
-            owner,
-            imageUrl,
-            questions
-        });
-
-        // שמירה למסד הנתונים
-        await newQuiz.save();
-
-        return res.status(201).json(newQuiz);
-    } catch (error) {
-        next({ message: error.message, status: 500 });
-    }
-}
-
-
 import { Quiz } from '../models/quiz.model.js';
 import mongoose from 'mongoose';
 
@@ -114,36 +86,6 @@ export async function addQuiz(req, res, next) {
         next(error);
     }
 }
-
-
-
-
-// את יכולה לבדוק אם כל זה טוב במקום מה שיש למעלה 
-// או לבקש מעדי שתשים עין על זה?
-// תודה!
-// המייל שלי עם שגיאה זנית מבצהריים והפלפון בתיקון אין לי איך לתקשר עם הסביבה!!!!
-
-//הוספה
-// export async function addQuiz(req, res, next) {
-//     try {
-//         const { name, categories, owner, imageUrl, questions } = req.body;
-
-//         // בדיקת שדות חובה
-//         if (!name || !owner || !questions) {
-//             return res.status(400).json({ message: 'שדות חובה חסרים' });
-//         }
-
-//         const newQuiz = new Quiz({ name, categories, owner, imageUrl, questions }); // יצירת שאלון חדש
-//         await newQuiz.save(); // שמירה למסד הנתונים
-
-//         return res.status(201).json(newQuiz); // החזרת השאלון שנוסף
-//     } catch (error) {
-//         next({ message: error.message, status: 500 });
-//     }
-// }
-
-//הוספה כמו שתלמידה של עדי כתבה
-
 
 //עדכון
 
