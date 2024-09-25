@@ -26,7 +26,7 @@ export async function getAllQuizzes(req, res, next) {
 
 export async function getQuizById(req, res, next) {
     
-    const  id  = req.params.id;
+    const  id = req.params.id;
 
     try {
         // מחפשים את המבחן לפי ה-ID
@@ -44,7 +44,3 @@ export async function getQuizById(req, res, next) {
         next({ message: error.message, status: 500 })
     }
 }
-
-
-
-

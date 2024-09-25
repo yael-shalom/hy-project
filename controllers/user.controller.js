@@ -35,5 +35,4 @@ export async function signUp(req, res, next) {
     } catch (error) {
         return next({ message: error.message, status: 409 })
     }
-
 }
