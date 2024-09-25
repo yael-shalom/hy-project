@@ -73,40 +73,52 @@ export async function addQuiz(req, res, next) {
 }
 
 
+import { Quiz } from '../models/quiz.model.js';
+import mongoose from 'mongoose';
+
+export async function addQuiz(req, res, next) {
+    console.log("addQuiz");
+    try {
+        const quizDataString = req.body.quiz; // הנחה שהנתונים מגיעים בצורה של מחרוזת JSON
+        const quizData = JSON.parse(quizDataString);
+        const imageName = req.file ? req.file.filename : null; // קבלת שם התמונה אם קיימת
+        const { name, categories, owner, questions } = quizData;
+
+        // יצירת אובייקט שאלון חדש
+        const newQuiz = new Quiz({
+            name,
+            categories,
+            owner,
+            imageUrl: imageName ? `${req.protocol}://${req.get('host')}/images/${imageName}` : null,
+            questions
+        });
+
+        // שמירה למסד הנתונים
+        await newQuiz.save();
+
+        // טיפול בקטגוריות חדשות (אם יש)
+        const categoryPromises = newQuiz.categories.map(async category => {
+            // אם יש קטגוריות נוספות, ניתן לעדכן אותן במסד הנתונים כאן
+            // לדוגמה, אם יש מודל Category, ניתן לבדוק אם הקטגוריה קיימת ולהוסיף אותה
+            // (הקוד להוספת קטגוריה נשאר לך להוסיף בהתאם למבנה של הקטגוריות בפרויקט שלך)
+        });
+
+        await Promise.all(categoryPromises);
+
+        return res.status(201).json(newQuiz); // החזרת השאלון שנוסף
+    } catch (error) {
+        next(error);
+    }
+}
+
+
 
 // את יכולה לבדוק אם כל זה טוב במקום מה שיש למעלה 
 // או לבקש מעדי שתשים עין על זה?
 // תודה!
 // המייל שלי עם שגיאה זנית מבצהריים והפלפון בתיקון אין לי איך לתקשר עם הסביבה!!!!
 
-
-// import { Quiz } from '../models/quiz.model.js';
-
-// export async function getAllQuizzes(req, res, next) {
-//     try {
-//         const quizzes = await Quiz.find(); // קבלת כל המבחנים
-//         res.json(quizzes); // החזרת המבחנים
-//     } catch (error) {
-//         next({ message: error.message, status: 500 });
-//     }
-// }
-
-// export async function getQuizById(req, res, next) {
-//     const id = req.params.id;
-
-//     try {
-//         const quiz = await Quiz.findById(id); // חיפוש מבחן לפי ID
-
-//         if (!quiz) {
-//             return res.status(404).json({ message: 'Quiz not found.' });
-//         }
-
-//         res.json(quiz); // החזרת המבחן
-//     } catch (error) {
-//         next({ message: error.message, status: 500 });
-//     }
-// }
-
+//הוספה
 // export async function addQuiz(req, res, next) {
 //     try {
 //         const { name, categories, owner, imageUrl, questions } = req.body;
@@ -124,6 +136,9 @@ export async function addQuiz(req, res, next) {
 //         next({ message: error.message, status: 500 });
 //     }
 // }
+
+//הוספה כמו שתלמידה של עדי כתבה
+
 
 //עדכון
 
