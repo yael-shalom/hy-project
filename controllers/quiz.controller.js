@@ -1,9 +1,8 @@
-// import mongoose from 'mongoose';
-// import { Recipe } from '../models/recipe.model.js'
 // import { Category } from '../models/category.model.js'
 // import path from 'path';
 
  import { Quiz } from '../models/quiz.model.js'
+ import mongoose from 'mongoose';
 
 
 export async function getAllQuizzes(req, res, next) {
@@ -126,20 +125,45 @@ export async function addQuiz(req, res, next) {
 //     }
 // }
 
-// // הוספת פונקציית עדכון שאלון
+//עדכון
+
+
 // export async function updateQuiz(req, res, next) {
-//     const quizId = req.params.id;
+//     const id = req.params.id;
+    
+//     // בדיקת תקValidity של ה-ID
+//     if (!mongoose.Types.ObjectId.isValid(id)) {
+//         return next({ message: 'ID is not valid' });
+//     }
 
 //     try {
-//         const updatedData = req.body;
-//         const updatedQuiz = await Quiz.findByIdAndUpdate(quizId, updatedData, { new: true, runValidators: true });
+//         // קבלת נתוני השאלון מהבקשה
+//         const quizDataString = req.body.quiz; // הנחה שהנתונים מגיעים בצורה של מחרוזת JSON
+//         const quizData = JSON.parse(quizDataString);
+        
+//         // פריסת נתונים
+//         const { name, categories, imageUrl, questions, owner } = quizData;
 
-//         if (!updatedQuiz) {
+//         // יצירת אובייקט עם נתוני העדכון
+//         const updatedQuiz = {
+//             name,
+//             categories,
+//             imageUrl,
+//             questions,
+//             owner
+//         };
+
+//         // עדכון השאלון במסד הנתונים
+//         const recipe = await Quiz.findByIdAndUpdate(id, { $set: updatedQuiz }, { new: true, runValidators: true });
+
+//         // בדיקת אם השאלון נמצא
+//         if (!recipe) {
 //             return res.status(404).json({ message: 'Quiz not found.' });
 //         }
 
-//         res.json(updatedQuiz); // החזרת השאלון המעודכן
+//         // החזרת השאלון המעודכן
+//         return res.json(recipe);
 //     } catch (error) {
-//         next({ message: error.message, status: 500 });
+//         next(error);
 //     }
 // }
