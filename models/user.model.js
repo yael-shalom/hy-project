@@ -1,6 +1,7 @@
 // import { required } from "joi";
 import { Schema, model } from "mongoose";
-import bcrypt from "bcryptjs"
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 const userSchema = new Schema({
     //id - auto
@@ -37,5 +38,12 @@ userSchema.pre('save', async function () {
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
 });
+
+export function generateToken(user) {
+    const privateKey = process.env.JWT_SECRET || 'JWT_SECRET';
+    const data = { user_id: user._id };
+    const token = jwt.sign(data, privateKey, { expiresIn: '3h' });
+    return token;
+}
 
 export const User = model('users', userSchema);
