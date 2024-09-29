@@ -4,7 +4,7 @@ import morgan from 'morgan';
 
 // my routes
 import userRouter from './routes/user.route.js';
-// import quizRouter from './routes/quiz.route.js';
+import quizRouter from './routes/quiz.route.js';
 
 import { pageNotFound, serverNotFound } from './middlewares/handleErrors.js';
 import 'dotenv/config';
@@ -27,7 +27,7 @@ app.use(morgan("dev"));
 app.use(cors());
 
 app.use("/users", userRouter);
-// app.use("/quizzes", quizRouter);
+app.use("/quizzes", quizRouter);
 
 //בשביל להעלות תמונות
 app.use('/images', express.static('uploads'))
