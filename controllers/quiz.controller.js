@@ -74,42 +74,43 @@ export async function addQuiz(req, res, next) {
 //עדכון
 
 
-// export async function updateQuiz(req, res, next) {
-//     const id = req.params.id;
+export async function updateQuiz(req, res, next) {
+    const id = req.params.id;
     
-//     // בדיקת תקValidity של ה-ID
-//     if (!mongoose.Types.ObjectId.isValid(id)) {
-//         return next({ message: 'ID is not valid' });
-//     }
+    // בדיקת תקValidity של ה-ID
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return next({ message: 'ID is not valid' });
+    }
 
-//     try {
-//         // קבלת נתוני השאלון מהבקשה
-//         const quizDataString = req.body.quiz; // הנחה שהנתונים מגיעים בצורה של מחרוזת JSON
-//         const quizData = JSON.parse(quizDataString);
-        
-//         // פריסת נתונים
-//         const { name, categories, imageUrl, questions, owner } = quizData;
+    try {
+        // קבלת נתוני השאלון מהבקשה
+        let quizData = req.body;
+        // פריסת נתונים
+        const { _id, name, categories, imageUrl, questions } = quizData;
 
-//         // יצירת אובייקט עם נתוני העדכון
-//         const updatedQuiz = {
-//             name,
-//             categories,
-//             imageUrl,
-//             questions,
-//             owner
-//         };
+        // יצירת אובייקט עם נתוני העדכון
+        const updatedQuiz = {
+            name,
+            categories,
+            imageUrl,
+            questions,
+            owner
+        };
 
-//         // עדכון השאלון במסד הנתונים
-//         const recipe = await Quiz.findByIdAndUpdate(id, { $set: updatedQuiz }, { new: true, runValidators: true });
+        // עדכון השאלון במסד הנתונים
+        const quiz = await Quiz.findByIdAndUpdate(
+            _id, 
+            { $set: updatedQuiz }, 
+            { new: true, runValidators: true });
 
-//         // בדיקת אם השאלון נמצא
-//         if (!recipe) {
-//             return res.status(404).json({ message: 'Quiz not found.' });
-//         }
+        // בדיקת אם השאלון נמצא
+        if (!quiz) {
+            return res.status(404).json({ message: 'Quiz not found.' });
+        }
 
-//         // החזרת השאלון המעודכן
-//         return res.json(recipe);
-//     } catch (error) {
-//         next(error);
-//     }
-// }
+        // החזרת השאלון המעודכן
+        return res.json(quiz);
+    } catch (error) {
+        next(error);
+    }
+}
