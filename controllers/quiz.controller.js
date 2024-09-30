@@ -114,3 +114,20 @@ export async function updateQuiz(req, res, next) {
         next(error);
     }
 }
+
+async function deleteQuiz(quizId) {
+    try {
+        const result = await Quiz.findByIdAndDelete(quizId);
+        
+        if (!result) {
+            console.log('לא נמצא חידון עם מזהה זה');
+            return null;
+        }
+        
+        console.log('חידון נמחק בהצלחה:', result);
+        return result;
+    } catch (error) {
+        console.error('שגיאה במחיקת החידון:', error);
+        throw error;
+    }
+}
