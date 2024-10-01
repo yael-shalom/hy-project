@@ -22,7 +22,7 @@ export async function getAllQuizzes(req, res, next) {
         next({ message: error.message, status: 500 })
     }
 
-}ג
+}
  
 export async function getQuizById(req, res, next) {
     
