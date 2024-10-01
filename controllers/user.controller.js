@@ -13,7 +13,7 @@ export async function signIn(req, res, next) {
             const token = generateToken(user);
             return res.json({user, token});
         }
-        return next({ message: 'Auth Failed-user is not found', status: 401 })
+        return next({ message: 'Auth Failed', status: 401 })
     }
     else {
         return next({ message: 'Auth Failed', status: 401 })
