@@ -1,32 +1,29 @@
 // import { Category } from '../models/category.model.js'
 // import path from 'path';
 
- import { Quiz } from '../models/quiz.model.js'
- import mongoose from 'mongoose';
+import { Quiz } from '../models/quiz.model.js'
+import mongoose from 'mongoose';
 
 
 export async function getAllQuizzes(req, res, next) {
 
-    try 
-    
-    {
+    try {
         // קבלת כל המבחנים ממאגר הנתונים
         const quizzes = await Quiz.find();
 
         // החזרת המבחנים
         res.json(quizzes);
-    } 
-    
-    catch (error) 
-    {
+    }
+
+    catch (error) {
         next({ message: error.message, status: 500 })
     }
 
 }
- 
+
 export async function getQuizById(req, res, next) {
-    
-    const  id = req.params.id;
+
+    const id = req.params.id;
 
     try {
         // מחפשים את המבחן לפי ה-ID
@@ -39,7 +36,7 @@ export async function getQuizById(req, res, next) {
 
         // מחזירים את המבחן
         res.json(quiz);
-    } 
+    }
     catch (error) {
         next({ message: error.message, status: 500 })
     }
@@ -49,7 +46,7 @@ export async function addQuiz(req, res, next) {
     console.log("addQuiz");
     try {
         const quizData = req.body
-        
+
         const imageName = req.file ? req.file.filename : null; // קבלת שם התמונה אם קיימת
         const { name, categories, owner, questions } = quizData;
 
@@ -76,7 +73,7 @@ export async function addQuiz(req, res, next) {
 
 export async function updateQuiz(req, res, next) {
     const id = req.params.id;
-    
+
     // בדיקת תקValidity של ה-ID
     if (!mongoose.Types.ObjectId.isValid(id)) {
         return next({ message: 'ID is not valid' });
@@ -99,35 +96,33 @@ export async function updateQuiz(req, res, next) {
 
         // עדכון השאלון במסד הנתונים
         const quiz = await Quiz.findByIdAndUpdate(
-            _id, 
-            { $set: updatedQuiz }, 
+            _id,
+            { $set: updatedQuiz },
             { new: true, runValidators: true });
 
         // בדיקת אם השאלון נמצא
         if (!quiz) {
-            return res.status(404).json({ message: 'Quiz not found.' });
+            return next({ message: 'quiz is not found', status: 404 })
         }
 
         // החזרת השאלון המעודכן
         return res.json(quiz);
     } catch (error) {
-        next(error);
+        return next(error);
     }
 }
 
-async function deleteQuiz(quizId) {
+export async function deleteQuiz(req, res, next) {
     try {
+        const quizId = req.params.id;
         const result = await Quiz.findByIdAndDelete(quizId);
-        
+
         if (!result) {
-            console.log('לא נמצא חידון עם מזהה זה');
-            return null;
+            return next({ message: "quiz not found", status: 404 });
         }
-        
-        console.log('חידון נמחק בהצלחה:', result);
-        return result;
+
+        return res.status(204).send();
     } catch (error) {
-        console.error('שגיאה במחיקת החידון:', error);
-        throw error;
+        return next(error);
     }
 }
