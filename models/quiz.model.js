@@ -30,7 +30,3 @@ const quizSchema = new Schema({
 })
 
 export const Quiz = model('quizzes', quizSchema);
-
-//id type: schema.type.objectId
-//date: default
-//req.body.xxx - (name, id ...)
