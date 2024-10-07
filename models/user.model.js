@@ -39,6 +39,8 @@ userSchema.pre('save', async function () {
     this.password = await bcrypt.hash(this.password, salt);
 });
 
+// userSchema.pre('')
+
 export function generateToken(user) {
     const privateKey = process.env.JWT_SECRET || 'JWT_SECRET';
     const data = { user_id: user._id };
