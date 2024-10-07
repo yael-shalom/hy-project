@@ -5,7 +5,7 @@ const quizSchema = new Schema({
 
     name: { type: String, required: true }, //quiz name
 
-    categories: { type: [String], default: ["שונות"] }, //quiz categories
+    categories: { type: String, default: "שונות" }, //quiz categories
 
     date: { type: Date, default: Date.now() }, //creation date
 
@@ -19,11 +19,12 @@ const quizSchema = new Schema({
     questions: [{ //quiz's questions
         //id - auto
         content: { type: String, required: true }, //question content
+        score: { type: Number }, //answer score
         imageUrl: { type: String }, //question's image
         answers: [{ //question answers
             //id - auto
             content: { type: String, required: true }, //answer content
-            score: { type: Number } //answer score
+            isRight: {type: Boolean, default: false}
         }]
     }],
     
