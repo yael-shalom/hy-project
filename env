@@ -1,4 +1,0 @@
-PORT=5000
-MONGODB_URI=mongodb://localhost:27017/quizDB
-# MONGODB_URI=mongodb+srv://yael7147757:Xmc1P6hBkSVhEtxT@projectscluster.m2jcu.mongodb.net/quizDB?retryWrites=true&w=majority&appName=ProjectsCluster
-JWT_SECRET=vd*tbV@ghjK&Htt%
