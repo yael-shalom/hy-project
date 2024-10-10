@@ -5,7 +5,7 @@ import { isAuth } from '../middlewares/auth.js';
 const router = express.Router();
 router.get('/', getAllQuizzes);
 router.get('/:id', getQuizById);
-router.get('/user/:id', getQuizByUserId);//להוסיף isAuth
+router.get('/owner/:id', getQuizByUserId);//להוסיף isAuth
 router.post('/', addQuiz);
 router.patch('/:id',isAuth, updateQuiz);
 
