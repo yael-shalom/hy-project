@@ -1,13 +1,13 @@
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
+import 'dotenv/config';
 
 // my routes
 import userRouter from './routes/user.route.js';
 import quizRouter from './routes/quiz.route.js';
 
 import { pageNotFound, serverNotFound } from './middlewares/handleErrors.js';
-import 'dotenv/config';
 import { dbConnect } from './config/db.js';
 
 dbConnect();
