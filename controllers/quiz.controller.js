@@ -126,3 +126,16 @@ export async function deleteQuiz(req, res, next) {
         return next(error);
     }
 }
+
+export async function getQuizByUserId(req, res, next) {
+
+    const id = req.params.id;
+
+    try {
+        const quizzes = await Quiz.find({ 'owner._id': id }); 
+        return res.json(quizzes);
+    }
+    catch (error) {
+        return next({ message: error.message, status: 500 })
+    }
+}
