@@ -8,9 +8,9 @@ import quizRouter from './routes/quiz.route.js';
 
 import { pageNotFound, serverNotFound } from './middlewares/handleErrors.js';
 import 'dotenv/config';
-import { DBconnect } from './config/db.js';
+import { dbConnect } from './config/db.js';
 
-DBconnect();
+dbConnect();
 
 //יוצר שרת
 const app = express();
