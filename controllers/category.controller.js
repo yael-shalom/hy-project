@@ -36,3 +36,25 @@ export async function getQuizzesByCategoryId(req, res, next) {
         return next({ message: error.message, status: 500 })
     }
 }
+
+export async function addCategory(req, res, next) {
+    console.log("addCategory");
+    try {
+        const categoryData = req.body
+
+        const {name, quizzes} = categoryData;
+
+        // יצירת אובייקט קטגוריה חדש
+        const newCategory = new Category({
+            name,
+            quizzes
+        });
+
+        // שמירה למסד הנתונים
+        await newCategory.save();
+
+        return res.status(201).json(newCategory); // החזרת הקטגוריה שנוספה
+    } catch (error) {
+        next(error);
+    }
+}
