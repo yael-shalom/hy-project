@@ -11,7 +11,7 @@ export async function signIn(req, res, next) {
         if (isSame) {
             user.password = "****";
             const token = generateToken(user);
-            return res.json({user, token});
+            return res.json({ username: user.name, userImg: user.imgUrl, token });
         }
         return next({ message: 'Auth Failed', status: 401 })
     }
@@ -27,7 +27,7 @@ export async function signUp(req, res, next) {
         await user.save();
         user.password = "****";
         const token = generateToken(user);
-        return res.status(201).json({user, token});
+            return res.status(201).json({ username: user.name, userImg: user.imgUrl, token });
     } catch (error) {
         return next({ message: error.message, status: 409 })
     }
@@ -39,7 +39,7 @@ export async function updateUser(req, res, next) {
         return next({ message: 'id is not valid', status: 409 })
 
     if (id !== req.user_id)
-        return next({message: 'user can update himself only', status: 403})
+        return next({ message: 'user can update himself only', status: 403 })
 
     try {
         let user = req.body;
@@ -70,7 +70,7 @@ export async function deleteUser(req, res, next) {
         return next({ message: 'id is not valid' })
 
     if (id !== req.user_id)
-        return next({message: 'user can delete himself only', status: 403})
+        return next({ message: 'user can delete himself only', status: 403 })
 
     try {
         const user = await User.findByIdAndDelete(id);
