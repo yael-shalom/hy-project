@@ -1,6 +1,7 @@
 // import { Category } from '../models/category.model.js'
 // import path from 'path';
 
+import { Category } from '../models/category.model.js';
 import { Quiz } from '../models/quiz.model.js'
 import mongoose from 'mongoose';
 
@@ -76,6 +77,10 @@ export async function addQuiz(req, res, next) {
         // שמירה למסד הנתונים
         await newQuiz.save();
 
+        await Category.findByIdAndUpdate(categories,
+            { $push: { quizzes: { _id: newQuiz._id, name: newQuiz.name } } }
+        );
+
         return res.status(201).json(newQuiz); // החזרת השאלון שנוסף
     } catch (error) {
         next(error);
@@ -99,12 +104,13 @@ export async function updateQuiz(req, res, next) {
         let quizData = req.body;
         // פריסת נתונים
         const { _id, name, categories, isPrivate, imageUrl, questions } = quizData;
-        if(id !== _id){
+        if (id !== _id) {
             return res.status(409).json({ message: 'id is not same.' });
         }
 
         const quizSrc = await Quiz.findById(_id);
-        if(userId !== quizSrc.owner._id.toString()){
+        const categorySrc = quizSrc.categories;
+        if (userId !== quizSrc.owner._id.toString()) {
             return res.status(403).json({ message: 'you have no permission.' });
         }
 
@@ -126,6 +132,15 @@ export async function updateQuiz(req, res, next) {
         // בדיקת אם השאלון נמצא
         if (!quiz) {
             return next({ message: 'quiz is not found', status: 404 })
+        }
+
+        if (categories !== categorySrc) {
+            await Category.findByIdAndUpdate(categorySrc,
+                { $pull: { quizzes: { _id: quizSrc._id } } }
+            );
+            await Category.findByIdAndUpdate(categories,
+                { $push: { quizzes: { _id: quiz._id, name: quiz.name } } }
+            );
         }
 
         // החזרת השאלון המעודכן
