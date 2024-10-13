@@ -1,12 +1,9 @@
 import { Schema, model } from "mongoose";
 
 const categorySchema = new Schema({
-    //id - auto
-
+    //_id - auto
     name: { type: String, required: true }, //category name
-
-    quizzes: [{type: Schema.Types.ObjectId, ref: 'quizzes' }]
-    
+    quizzes: [{ _id: { type: Schema.Types.ObjectId, ref: 'quizzes', required: true }, name: { type: String, required: true } }]
 })
 
 export const Category = model('categories', categorySchema);
