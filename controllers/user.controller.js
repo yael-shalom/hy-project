@@ -9,7 +9,6 @@ export async function signIn(req, res, next) {
     if (user) {
         const isSame = await bcrypt.compare(password, user.password);
         if (isSame) {
-            user.password = "****";
             const token = generateToken(user);
             return res.json({ username: user.name, userImg: user.imgUrl, token });
         }
@@ -25,7 +24,6 @@ export async function signUp(req, res, next) {
     try {
         const user = new User({ name, email, password });
         await user.save();
-        user.password = "****";
         const token = generateToken(user);
             return res.status(201).json({ username: user.name, userImg: user.imgUrl, token });
     } catch (error) {
