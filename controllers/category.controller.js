@@ -16,26 +16,26 @@ export async function getAllCategories(req, res, next) {
     }
 }
 
-export async function getQuizzesByCategoryId(req, res, next) {
+// export async function getQuizzesByCategoryId(req, res, next) {
 
-    const id = req.params.id;
+//     const id = req.params.id;
 
-    try {
-        //ID מחפשים את הקטגוריה לפי ה
-        const category = await Category.findById(id);
+//     try {
+//         //ID מחפשים את הקטגוריה לפי ה
+//         const category = await Category.findById(id);
 
-        //הזה ID אם לא נמצאה קטגוריה עם ה
-        if (!category) {
-            return res.status(404).json({ message: 'Category not found.' });
-        }
+//         //הזה ID אם לא נמצאה קטגוריה עם ה
+//         if (!category) {
+//             return res.status(404).json({ message: 'Category not found.' });
+//         }
 
-        // מחזירים את המבחנים
-        res.json(category.quizzes);
-    }
-    catch (error) {
-        return next({ message: error.message, status: 500 })
-    }
-}
+//         // מחזירים את המבחנים
+//         res.json(category.quizzes);
+//     }
+//     catch (error) {
+//         return next({ message: error.message, status: 500 })
+//     }
+// }
 
 export async function addCategory(req, res, next) {
     console.log("addCategory");
@@ -56,5 +56,26 @@ export async function addCategory(req, res, next) {
         return res.status(201).json(newCategory); // החזרת הקטגוריה שנוספה
     } catch (error) {
         next(error);
+    }
+}
+
+export async function getCategoryById(req, res, next) {
+
+    const id = req.params.id;
+
+    try {
+        // מחפשים את הקטגוריה לפי ה-ID
+        const category = await Category.findById(id);
+
+        // אם לא נמצא מבחן עם ה-ID הזה
+        if (!category) {
+            return res.status(404).json({ message: 'Category not found.' });
+        }
+
+        // מחזירים את הקטגוריה
+        res.json(category);
+    }
+    catch (error) {
+        next({ message: error.message, status: 500 })
     }
 }
