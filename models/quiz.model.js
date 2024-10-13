@@ -5,7 +5,7 @@ const quizSchema = new Schema({
 
     name: { type: String, required: true }, //quiz name
 
-    categories: { type: String, default: "שונות" }, //quiz categories
+    categories: { type: Schema.Types.ObjectId, ref: 'categories', default: "שונות" }, //quiz categories
 
     date: { type: Date, default: Date.now() }, //creation date
 
@@ -14,12 +14,14 @@ const quizSchema = new Schema({
         name: String //owner name
     },
 
+    isPrivate: { type:Boolean, default:true},
+
     imageUrl: { type: String }, //quiz's image
 
     questions: [{ //quiz's questions
         //id - auto
         content: { type: String, required: true }, //question content
-        score: { type: Number }, //answer score
+        // score: { type: Number }, //answer score
         imageUrl: { type: String }, //question's image
         answers: [{ //question answers
             //id - auto
@@ -28,6 +30,19 @@ const quizSchema = new Schema({
         }]
     }],
     
-})
+});
+
+quizSchema.virtual('score').get(function() {
+    const totalQuestions = this.questions.length;
+    return 100 / totalQuestions;
+});
+
+quizSchema.options.toJSON = {
+    virtuals: true,
+    transform: function (doc, ret) {
+        const { __v, ...rest } = ret; // Destructure _id from ret
+        return rest; // Rename _id to id using spread operator
+    }
+};
 
 export const Quiz = model('quizzes', quizSchema);

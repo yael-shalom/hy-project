@@ -48,13 +48,14 @@ export async function addQuiz(req, res, next) {
         const quizData = req.body
 
         const imageName = req.file ? req.file.filename : null; // קבלת שם התמונה אם קיימת
-        const { name, categories, owner, questions } = quizData;
+        const { name, categories, owner, isPrivate, questions } = quizData;
 
         // יצירת אובייקט שאלון חדש
         const newQuiz = new Quiz({
             name,
             categories,
             owner,
+            isPrivate,
             imageUrl: imageName ? `${req.protocol}://${req.get('host')}/images/${imageName}` : null,
             questions
         });
@@ -83,12 +84,13 @@ export async function updateQuiz(req, res, next) {
         // קבלת נתוני השאלון מהבקשה
         let quizData = req.body;
         // פריסת נתונים
-        const { _id, name, categories, imageUrl, questions } = quizData;
+        const { _id, name, categories, isPrivate, imageUrl, questions } = quizData;
 
         // יצירת אובייקט עם נתוני העדכון
         const updatedQuiz = {
             name,
             categories,
+            isPrivate,
             imageUrl,
             questions,
             owner
