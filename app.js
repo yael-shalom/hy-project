@@ -7,6 +7,7 @@ import 'dotenv/config';
 // my routes
 import userRouter from './routes/user.route.js';
 import quizRouter from './routes/quiz.route.js';
+import categoryRouter from './routes/category.route.js';
 
 import { pageNotFound, serverNotFound } from './middlewares/handleErrors.js';
 import { dbConnect } from './config/db.js';
@@ -29,6 +30,7 @@ app.use(cors());
 
 app.use("/users", userRouter);
 app.use("/quizzes", quizRouter);
+app.use("/categories", categoryRouter);
 
 //בשביל להעלות תמונות
 app.use('/images', express.static('uploads'))
