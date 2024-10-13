@@ -43,7 +43,7 @@ userSchema.pre('save', async function () {
 
 export function generateToken(user) {
     const privateKey = process.env.JWT_SECRET || 'JWT_SECRET';
-    const data = { user_id: user._id };
+    const data = { userId: user._id, username: user.name };
     const token = jwt.sign(data, privateKey, { expiresIn: '3h' });
     return token;
 }

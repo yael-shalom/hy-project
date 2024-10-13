@@ -36,7 +36,7 @@ export async function updateUser(req, res, next) {
     if (!mongoose.Types.ObjectId.isValid(id))
         return next({ message: 'id is not valid', status: 409 })
 
-    if (id !== req.user_id)
+    if (id !== req.userId)
         return next({ message: 'user can update himself only', status: 403 })
 
     try {
@@ -67,7 +67,7 @@ export async function deleteUser(req, res, next) {
     if (!mongoose.Types.ObjectId.isValid(id))
         return next({ message: 'id is not valid' })
 
-    if (id !== req.user_id)
+    if (id !== req.userId)
         return next({ message: 'user can delete himself only', status: 403 })
 
     try {

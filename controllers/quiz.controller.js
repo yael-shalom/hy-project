@@ -6,10 +6,16 @@ import mongoose from 'mongoose';
 
 
 export async function getAllQuizzes(req, res, next) {
-
     try {
+        const userId = req.userId;
+        let query = { isPrivate: false };
+
+        if (userId) {
+            query = { $or: [{ 'owner._id': userId }, query] };
+        }
+
         // קבלת כל המבחנים ממאגר הנתונים
-        const quizzes = await Quiz.find();
+        const quizzes = await Quiz.find(query);
 
         // החזרת המבחנים
         res.json(quizzes);
@@ -22,16 +28,20 @@ export async function getAllQuizzes(req, res, next) {
 }
 
 export async function getQuizById(req, res, next) {
-
-    const id = req.params.id;
-
     try {
+        const quizId = req.params.id;
+        const userId = req.userId;
+
         // מחפשים את המבחן לפי ה-ID
-        const quiz = await Quiz.findById(id);
+        const quiz = await Quiz.findById(quizId);
 
         // אם לא נמצא מבחן עם ה-ID הזה
         if (!quiz) {
             return res.status(404).json({ message: 'Quiz not found.' });
+        }
+
+        if (quiz.isPrivate && quiz.owner._id !== userId) {
+            return res.status(403).json({ message: 'you have no permission.' });
         }
 
         // מחזירים את המבחן
@@ -45,16 +55,19 @@ export async function getQuizById(req, res, next) {
 export async function addQuiz(req, res, next) {
     console.log("addQuiz");
     try {
-        const quizData = req.body
+        const quizData = req.body;
 
         const imageName = req.file ? req.file.filename : null; // קבלת שם התמונה אם קיימת
-        const { name, categories, owner, isPrivate, questions } = quizData;
+        const { name, categories, isPrivate, questions } = quizData;
 
         // יצירת אובייקט שאלון חדש
         const newQuiz = new Quiz({
             name,
             categories,
-            owner,
+            owner: {
+                _id: req.userId,
+                name: req.username
+            },
             isPrivate,
             imageUrl: imageName ? `${req.protocol}://${req.get('host')}/images/${imageName}` : null,
             questions
@@ -81,10 +94,19 @@ export async function updateQuiz(req, res, next) {
     }
 
     try {
+        const userId = req.userId;
         // קבלת נתוני השאלון מהבקשה
         let quizData = req.body;
         // פריסת נתונים
         const { _id, name, categories, isPrivate, imageUrl, questions } = quizData;
+        if(id !== _id){
+            return res.status(409).json({ message: 'id is not same.' });
+        }
+
+        const quizSrc = await Quiz.findById(_id);
+        if(userId !== quizSrc.owner._id.toString()){
+            return res.status(403).json({ message: 'you have no permission.' });
+        }
 
         // יצירת אובייקט עם נתוני העדכון
         const updatedQuiz = {
@@ -92,8 +114,7 @@ export async function updateQuiz(req, res, next) {
             categories,
             isPrivate,
             imageUrl,
-            questions,
-            owner
+            questions
         };
 
         // עדכון השאלון במסד הנתונים
@@ -131,10 +152,16 @@ export async function deleteQuiz(req, res, next) {
 
 export async function getQuizByUserId(req, res, next) {
 
-    const id = req.params.id;
 
     try {
-        const quizzes = await Quiz.find({ 'owner._id': id }); 
+        const id = req.params.id;
+        const userId = req.userId;
+
+        if (id !== userId) {
+            return res.status(403).json({ message: 'you have no permission.' });
+        }
+
+        const quizzes = await Quiz.find({ 'owner._id': id });
         return res.json(quizzes);
     }
     catch (error) {
