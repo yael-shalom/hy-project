@@ -8,9 +8,11 @@ import 'dotenv/config';
 import userRouter from './routes/user.route.js';
 import quizRouter from './routes/quiz.route.js';
 import categoryRouter from './routes/category.route.js';
+import uploadRouter from './routes/upload.js';
 
 import { pageNotFound, serverNotFound } from './middlewares/handleErrors.js';
 import { dbConnect } from './config/db.js';
+import fileUpload from 'express-fileupload';
 
 dbConnect();
 
@@ -28,12 +30,17 @@ app.use(morgan("dev"));
 //מאפשר גישה לכולם לפני ההגשה לשנות לנ"ל
 app.use(cors());
 
+//בשביל להעלות תמונות
+app.use('/images', express.static('uploads'))
+app.use(fileUpload({
+  useTempFiles:true,
+  limits: { fileSize: 1024 * 1024 * 5 }
+}))
+
 app.use("/users", userRouter);
 app.use("/quizzes", quizRouter);
 app.use("/categories", categoryRouter);
-
-//בשביל להעלות תמונות
-app.use('/images', express.static('uploads'))
+app.use("/upload", uploadRouter);
 
 //של השגיאות, אם לא מצא נתיב יגיע לזה
 app.use(pageNotFound);
