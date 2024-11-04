@@ -7,6 +7,6 @@ router.get('/', getUser, getAllQuizzes);
 router.get('/:id', getUser, getQuizById);
 router.get('/owner/:id', isAuth, getQuizByUserId);
 router.post('/', addQuiz);//להוסיף isAuth
-router.patch('/:id', isAuth, updateQuiz);
+router.patch('/:id', updateQuiz);//להוסיף isAuth
 
 export default router
