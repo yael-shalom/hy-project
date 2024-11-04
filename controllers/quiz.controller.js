@@ -1,9 +1,9 @@
-// import { Category } from '../models/category.model.js'
-// import path from 'path';
-
 import { Category } from '../models/category.model.js';
 import { Quiz } from '../models/quiz.model.js'
 import mongoose from 'mongoose';
+import { v2 as cloudinary } from 'cloudinary';
+import Path from 'path'
+
 
 
 export async function getAllQuizzes(req, res, next) {
@@ -55,11 +55,34 @@ export async function getQuizById(req, res, next) {
 
 export async function addQuiz(req, res, next) {
     console.log("addQuiz");
-    try {
-        const quizData = req.body;
+    console.log(req.files);
+    let exts_arr = [".png", ".jpg", ".jpeg", ".svg", ".gif"];
 
-        const imageName = req.file ? req.file.filename : null; // קבלת שם התמונה אם קיימת
-        const { name, categories, isPrivate, questions } = quizData;
+    try {
+        const image = req.files?.imageUrl;
+
+        let imageData = { secure_url: undefined };
+        if (image) {
+            if (image.size <= 1024 * 1024 * 2) {
+                let extFile = Path.extname(image.name);
+                if (exts_arr.includes(extFile)) {
+                    imageData = await cloudinary.uploader.upload(image.tempFilePath, { unique_filename: true })
+                    image.mv("public/" + image.name, (err) => {
+                        if (err)
+                            return res.status(401).json({ msg: "error", err })
+                        res.json("file upload");
+                    });
+                }
+                else {
+                    res.status(400).json("file must be image, png, jpg, jpeg, svg, gif");
+                }
+            }
+            else {
+                res.status(400).json("file too big, maximum 2 mb");
+            }
+        }
+
+        const { name, categories, isPrivate, questions } = req.body;
 
         // יצירת אובייקט שאלון חדש
         const newQuiz = new Quiz({
@@ -70,7 +93,7 @@ export async function addQuiz(req, res, next) {
                 name: req.username
             },
             isPrivate,
-            imageUrl: imageName ? `${req.protocol}://${req.get('host')}/images/${imageName}` : null,
+            imageUrl: imageData.secure_url,
             questions
         });
 
@@ -102,6 +125,10 @@ export async function updateQuiz(req, res, next) {
         const userId = req.userId;
         // קבלת נתוני השאלון מהבקשה
         let quizData = req.body;
+
+        console.log(quizData);
+
+
         // פריסת נתונים
         const { _id, name, categories, isPrivate, imageUrl, questions } = quizData;
         if (id !== _id) {
@@ -110,9 +137,9 @@ export async function updateQuiz(req, res, next) {
 
         const quizSrc = await Quiz.findById(_id);
         const categorySrc = quizSrc.categories;
-        if (userId !== quizSrc.owner._id.toString()) {
-            return res.status(403).json({ message: 'you have no permission.' });
-        }
+        // if (userId !== quizSrc.owner._id.toString()) {
+        //     return res.status(403).json({ message: 'you have no permission.' });
+        // }
 
         // יצירת אובייקט עם נתוני העדכון
         const updatedQuiz = {
