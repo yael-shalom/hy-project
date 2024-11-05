@@ -3,6 +3,13 @@ import { Schema, model } from "mongoose";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
+
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
+
+
+
+
 const userSchema = new Schema({
     //id - auto
 
@@ -39,6 +46,7 @@ userSchema.pre('save', async function () {
     this.password = await bcrypt.hash(this.password, salt);
 });
 
+
 // userSchema.pre('')
 
 export function generateToken(user) {
@@ -47,5 +55,20 @@ export function generateToken(user) {
     const token = jwt.sign(data, privateKey, { expiresIn: '3h' });
     return token;
 }
+
+
+userSchema.pre('save', async function(next) {
+    if (!this.isModified('password')) return next();
+    this.password = await bcrypt.hash(this.password, 10);
+    next();
+});
+
+userSchema.methods.comparePassword = function(candidatePassword) {
+    return bcrypt.compare(candidatePassword, this.password);
+};
+
+module.exports = mongoose.model('User', userSchema);
+
+
 
 export const User = model('users', userSchema);
