@@ -3,13 +3,7 @@ import { Schema, model } from "mongoose";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
-
-
-
-
+    
 const userSchema = new Schema({
     //id - auto
 
@@ -66,9 +60,6 @@ userSchema.pre('save', async function(next) {
 userSchema.methods.comparePassword = function(candidatePassword) {
     return bcrypt.compare(candidatePassword, this.password);
 };
-
-module.exports = mongoose.model('User', userSchema);
-
 
 
 export const User = model('users', userSchema);
