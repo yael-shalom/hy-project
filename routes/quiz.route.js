@@ -1,5 +1,5 @@
 import express from 'express'
-import { getAllQuizzes, addQuiz, getQuizById, updateQuiz, getQuizByUserId, deleteQuiz, getImage } from '../controllers/quiz.controller.js'
+import { getAllQuizzes, addQuiz, getQuizById, updateQuiz, getQuizByUserId, deleteQuiz } from '../controllers/quiz.controller.js'
 import { getUser, isAuth } from '../middlewares/auth.js';
 
 const router = express.Router();
