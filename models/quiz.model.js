@@ -14,7 +14,7 @@ const quizSchema = new Schema({
         name: String //owner name
     },
 
-    isPrivate: { type:Boolean, default:true},
+    isPrivate: { type: Boolean, default: true },
 
     imageUrl: { type: String }, //quiz's image
 
@@ -26,13 +26,13 @@ const quizSchema = new Schema({
         answers: [{ //question answers
             //id - auto
             content: { type: String, required: true }, //answer content
-            isRight: {type: Boolean, default: false}
+            isRight: { type: Boolean, default: false }
         }]
     }],
-    
+
 });
 
-quizSchema.virtual('score').get(function() {
+quizSchema.virtual('score').get(function () {
     const totalQuestions = this.questions.length;
     return 100 / totalQuestions;
 });
