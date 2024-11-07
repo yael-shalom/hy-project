@@ -5,7 +5,7 @@ const quizSchema = new Schema({
 
     name: { type: String, required: true }, //quiz name
 
-    categories: { type: Schema.Types.ObjectId, ref: 'categories', default: "שונות" }, //quiz categories
+    categories: { type: Schema.Types.ObjectId, ref: 'categories' }, //quiz categories
 
     date: { type: Date, default: Date.now() }, //creation date
 
