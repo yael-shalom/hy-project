@@ -46,10 +46,10 @@ export async function getQuizById(req, res, next) {
         }
 
         // מחזירים את המבחן
-        res.json(quiz);
+        return res.json(quiz);
     }
     catch (error) {
-        next({ message: error.message, status: 500 })
+        return next({ message: error.message, status: 500 })
     }
 }
 
@@ -137,9 +137,9 @@ export async function updateQuiz(req, res, next) {
 
         const quizSrc = await Quiz.findById(_id);
         const categorySrc = quizSrc.categories;
-        // if (userId !== quizSrc.owner._id.toString()) {
-        //     return res.status(403).json({ message: 'you have no permission.' });
-        // }
+        if (userId !== quizSrc.owner._id.toString()) {
+            return res.status(403).json({ message: 'you have no permission.' });
+        }
 
         // יצירת אובייקט עם נתוני העדכון
         const updatedQuiz = {
@@ -180,8 +180,19 @@ export async function updateQuiz(req, res, next) {
 export async function deleteQuiz(req, res, next) {
     try {
         const quizId = req.params.id;
-        const result = await Quiz.findByIdAndDelete(quizId);
+        const quiz = await Quiz.findById(quizId);
 
+        const updatedCategory = await Category.findOneAndUpdate(
+            { _id: quiz.categories },
+            { $pull: { quizzes: { _id: quizId } } },
+            { new: true }
+        );
+
+        if (!updatedCategory) {
+            return res.status(404).json({ message: "Category not found" });
+        }
+        
+        const result = await Quiz.findByIdAndDelete(quizId);
         if (!result) {
             return next({ message: "quiz not found", status: 404 });
         }
@@ -193,8 +204,6 @@ export async function deleteQuiz(req, res, next) {
 }
 
 export async function getQuizByUserId(req, res, next) {
-
-
     try {
         const id = req.params.id;
         const userId = req.userId;
