@@ -1,4 +1,5 @@
 import { Category } from '../models/category.model.js';
+import { User } from '../models/user.model.js';
 import { Quiz } from '../models/quiz.model.js'
 import mongoose from 'mongoose';
 import { v2 as cloudinary } from 'cloudinary';
@@ -9,6 +10,7 @@ import Path from 'path'
 export async function getAllQuizzes(req, res, next) {
     try {
         const userId = req.userId;
+
         let query = { isPrivate: false };
 
         if (userId) {
@@ -16,7 +18,8 @@ export async function getAllQuizzes(req, res, next) {
         }
 
         // קבלת כל המבחנים ממאגר הנתונים
-        const quizzes = await Quiz.find(query);
+        let quizzes = await Quiz.find(query);
+        // quizzes=quizzes.map(q=>{return{...q, isOwner: q.owner._id === req.userId}})///////////////////////////////////////////////////////////////////
 
         // החזרת המבחנים
         res.json(quizzes);
@@ -34,14 +37,18 @@ export async function getQuizById(req, res, next) {
         const userId = req.userId;
 
         // מחפשים את המבחן לפי ה-ID
-        const quiz = await Quiz.findById(quizId);
+        let quiz = await Quiz.findById(quizId);
 
         // אם לא נמצא מבחן עם ה-ID הזה
         if (!quiz) {
             return res.status(404).json({ message: 'Quiz not found.' });
         }
 
-        if (quiz.isPrivate && quiz.owner._id !== userId) {
+
+        // console.log("permission");
+        // console.log(userId);
+        // console.log(quiz.owner._id.toString());
+        if (quiz.isPrivate && (quiz.owner._id).toString() !== userId) {
             return res.status(403).json({ message: 'you have no permission.' });
         }
 
@@ -229,14 +236,11 @@ export async function deleteQuiz(req, res, next) {
 
 export async function getQuizByUserId(req, res, next) {
     try {
-        const id = req.params.id;
         const userId = req.userId;
 
-        if (id !== userId) {
-            return res.status(403).json({ message: 'you have no permission.' });
-        }
+        const quizzes = await Quiz.find({ 'owner._id': userId });
+        console.log(quizzes);
 
-        const quizzes = await Quiz.find({ 'owner._id': id });
         return res.json(quizzes);
     }
     catch (error) {
