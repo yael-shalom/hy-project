@@ -7,7 +7,10 @@ import Path from 'path'
 
 export async function signIn(req, res, next) {
     const { email, password } = req.body;
-    const user = await User.findOne({ email }); //במקום email:email רק email כי זה באותו שם
+    console.log(password);
+    console.log(email);
+
+    const user = await User.findOne({ email });
     if (user) {
         const isSame = await bcrypt.compare(password, user.password);
         if (isSame) {
@@ -87,12 +90,9 @@ export async function updateUser(req, res, next) {
 }
 
 export async function deleteUser(req, res, next) {
-    const id = req.params.id;
+    const id = req.userId;
     if (!mongoose.Types.ObjectId.isValid(id))
         return next({ message: 'id is not valid' })
-
-    if (id !== req.userId)
-        return next({ message: 'user can delete himself only', status: 403 })
 
     try {
         const user = await User.findByIdAndDelete(id);
