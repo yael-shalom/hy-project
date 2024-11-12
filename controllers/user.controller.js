@@ -21,11 +21,33 @@ export async function signIn(req, res, next) {
 
 export async function signUp(req, res, next) {
     const { name, email, password } = req.body;
+    let exts_arr = [".png", ".jpg", ".jpeg", ".svg", ".gif"];
     try {
-        const user = new User({ name, email, password });
+        const image = req.files?.imgUrl;
+        let imageData = { secure_url: undefined };
+        if (image) {
+            if (image.size <= 1024 * 1024 * 2) {
+                let extFile = Path.extname(image.name);
+                if (exts_arr.includes(extFile)) {
+                    imageData = await cloudinary.uploader.upload(image.tempFilePath, { unique_filename: true })
+                    console.log(imageData);
+                }
+                else {
+                    return next({ message: error.message, status: 400 })
+                }
+            }
+            else {
+                return next({ message: error.message, status: 400 })
+            }
+        }
+
+
+        const user = new User({ name, email, password, imgUrl: imageData.secure_url });
         await user.save();
         const token = generateToken(user);
-            return res.status(201).json({ username: user.name, userImg: user.imgUrl, token });
+        console.log(user.imgUrl);
+        
+        return res.status(201).json({ username: user.name, userImg: user.imgUrl, token });
     } catch (error) {
         return next({ message: error.message, status: 409 })
     }
