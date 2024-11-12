@@ -2,6 +2,8 @@ import mongoose from 'mongoose';
 import { generateToken, User } from '../models/user.model.js';
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { v2 as cloudinary } from 'cloudinary';
+import Path from 'path'
 
 export async function signIn(req, res, next) {
     const { email, password } = req.body;
