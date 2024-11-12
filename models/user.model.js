@@ -13,6 +13,8 @@ const userSchema = new Schema({
 
     password: { type: String, required: true }, //user password
 
+    imgUrl : {type: String},
+
     score: { type: Number, min: 0 }, //user score
 
     average: { type: Number }, //user's average
