@@ -113,6 +113,22 @@ export async function addQuiz(req, res, next) {
         await Category.findByIdAndUpdate(categories,
             { $push: { quizzes: { _id: newQuiz._id, name: newQuiz.name } } }
         );
+        
+        //הוספת השאלון לרשימת השאלונים שהוסיף המשתמש
+        try {
+            const user = await User.findById(newQuiz.owner._id);
+
+            if (!user) {
+                throw new Error('User not found');
+            }
+
+            user.createdQuizzes.push({ _id: newQuiz._id, name: newQuiz.name });
+            await user.save();
+
+            console.log('Quiz added successfully to createdQuizzes array');
+        } catch (error) {
+            console.error('Error adding quiz to createdQuizzes:', error.message);
+        }
 
         return res.status(201).json(newQuiz); // החזרת השאלון שנוסף
     } catch (error) {
@@ -121,8 +137,6 @@ export async function addQuiz(req, res, next) {
 }
 
 //עדכון
-
-
 export async function updateQuiz(req, res, next) {
     const id = req.params.id;
 
@@ -201,7 +215,7 @@ export async function deleteQuiz(req, res, next) {
         if (!updatedCategory) {
             return res.status(404).json({ message: "Category not found" });
         }
-        
+
         const result = await Quiz.findByIdAndDelete(quizId);
         if (!result) {
             return next({ message: "quiz not found", status: 404 });
