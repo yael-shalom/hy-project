@@ -211,7 +211,34 @@ export async function updateQuiz(req, res, next) {
 export async function deleteQuiz(req, res, next) {
     try {
         const quizId = req.params.id;
-        const quiz = await Quiz.findById(quizId);
+        const userId = req.userId;
+        const quiz = await Quiz.findById(quizId);        
+        
+        if(userId!==(quiz.owner._id).toString()){
+            return next({ message: 'user can delete himself quizzes only', status: 403 })
+        }
+        else {
+            try {
+                const user = await User.findById(userId);
+        
+                if (!user) {
+                    throw new Error('User not found');
+                }
+                
+                const indexToRemove = user.createdQuizzes.findIndex(q => (q._id).toString() === quizId);
+        
+                if (indexToRemove === -1) {
+                    throw new Error('Quiz not found in createdQuizzes');
+                }
+        
+                user.createdQuizzes.splice(indexToRemove, 1);
+                await user.save();
+        
+                console.log('Quiz removed successfully from createdQuizzes array');
+            } catch (error) {
+                console.error('Error removing quiz from createdQuizzes:', error.message);
+            }
+        }
 
         const updatedCategory = await Category.findOneAndUpdate(
             { _id: quiz.categories },
