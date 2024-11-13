@@ -1,3 +1,4 @@
+import Joi from "joi";
 import { Schema, model } from "mongoose";
 
 const quizSchema = new Schema({
@@ -46,3 +47,8 @@ quizSchema.options.toJSON = {
 };
 
 export const Quiz = model('quizzes', quizSchema);
+
+export const quizValidator = Joi.object({
+    name: Joi.string().required(),
+    owner: Joi.required()
+})

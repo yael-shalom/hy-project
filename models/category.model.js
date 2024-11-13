@@ -1,3 +1,4 @@
+import Joi from "joi";
 import { Schema, model } from "mongoose";
 
 const categorySchema = new Schema({
@@ -7,3 +8,7 @@ const categorySchema = new Schema({
 })
 
 export const Category = model('categories', categorySchema);
+
+export const categoryValidator = Joi.object({
+    name: Joi.string().required()
+})

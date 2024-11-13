@@ -1,18 +1,26 @@
 import mongoose from 'mongoose';
-import { generateToken, User } from '../models/user.model.js';
+import { generateToken, User, userValidator } from '../models/user.model.js';
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { v2 as cloudinary } from 'cloudinary';
 import Path from 'path'
 
 export async function signIn(req, res, next) {
+    const result = userValidator.login.validate(req.body);
+
+    if (result.error) {
+        console.log(result.error);
+                
+        return next({ message: result.error, status: 409 });
+    }
+
     const { email, password } = req.body;
-    console.log(password);
-    console.log(email);
+
 
     const user = await User.findOne({ email });
     if (user) {
-        const isSame = await bcrypt.compare(password, user.password);
+        const isSame = user.comparePassword(password);
+        // const isSame = await bcrypt.compare(password, user.password);
         if (isSame) {
             const token = generateToken(user);
             return res.json({ username: user.name, userImg: user.imgUrl, token });
@@ -51,7 +59,7 @@ export async function signUp(req, res, next) {
         await user.save();
         const token = generateToken(user);
         console.log(user.imgUrl);
-        
+
         return res.status(201).json({ username: user.name, userImg: user.imgUrl, token });
     } catch (error) {
         return next({ message: error.message, status: 409 })

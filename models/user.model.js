@@ -2,6 +2,7 @@
 import { Schema, model } from "mongoose";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import Joi from "joi";
   
     
 const userSchema = new Schema({
@@ -65,3 +66,19 @@ userSchema.methods.comparePassword = function(candidatePassword) {
 
 
 export const User = model('users', userSchema);
+
+export const userValidator = {
+    login: Joi.object({
+        name: Joi.string(),
+        email: Joi.string().email().required(),
+        password: Joi.string().required(),
+        imgUrl: Joi.string()
+
+    }),
+    register: {
+        name: Joi.string().required(),
+        email: Joi.string().email().required(),
+        password: Joi.string().required(),
+        imgUrl: Joi.string()
+    }
+}

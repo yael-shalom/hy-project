@@ -1,6 +1,6 @@
 import { Category } from '../models/category.model.js';
 import { User } from '../models/user.model.js';
-import { Quiz } from '../models/quiz.model.js'
+import { Quiz, quizValidator } from '../models/quiz.model.js'
 import mongoose from 'mongoose';
 import { v2 as cloudinary } from 'cloudinary';
 import Path from 'path'
@@ -44,10 +44,6 @@ export async function getQuizById(req, res, next) {
             return res.status(404).json({ message: 'Quiz not found.' });
         }
 
-
-        // console.log("permission");
-        // console.log(userId);
-        // console.log(quiz.owner._id.toString());
         if (quiz.isPrivate && (quiz.owner._id).toString() !== userId) {
             return res.status(403).json({ message: 'you have no permission.' });
         }
@@ -71,8 +67,13 @@ export async function getQuizById(req, res, next) {
 }
 
 export async function addQuiz(req, res, next) {
-    console.log("addQuiz");
-    console.log(req.files);
+
+    const result = quizValidator.validate(req.body);
+
+    if (result.error) {
+        return next({ message: result.error, status: 409 });
+    }
+
     let exts_arr = [".png", ".jpg", ".jpeg", ".svg", ".gif"];
 
     try {
