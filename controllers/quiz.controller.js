@@ -48,12 +48,9 @@ export async function getQuizById(req, res, next) {
             return res.status(403).json({ message: 'you have no permission.' });
         }
 
-        // console.log(quiz.owner);
-        console.log(req.userId);
-        console.log((quiz.owner?._id).toString());
 
-        const { owner, _id, name, categories, date, isPrivate, imageUrl, questions, __v } = quiz;
-        quiz = { owner, _id, name, categories, date, isPrivate, imageUrl, questions, __v, isOwner: (quiz.owner?._id).toString() === req.userId }
+        const { owner, _id, name, categories, date, isPrivate, score, imageUrl, questions, __v } = quiz;
+        quiz = { owner, _id, name, categories, date, isPrivate, score, imageUrl, questions, __v, isOwner: (quiz.owner?._id).toString() === req.userId }
         console.log("quiz");
 
 
