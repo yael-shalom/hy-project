@@ -48,7 +48,11 @@ quizSchema.options.toJSON = {
 
 export const Quiz = model('quizzes', quizSchema);
 
-export const quizValidator = Joi.object({
-    name: Joi.string().required(),
-    owner: Joi.required()
-})
+// export const quizValidator = Joi.object({
+//     name: Joi.string().required(),
+//     owner: Joi.required(),
+//     categories,
+//     date,
+//     isPrivate,
+//     questions
+// })

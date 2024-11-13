@@ -1,6 +1,6 @@
 import { Category } from '../models/category.model.js';
 import { User } from '../models/user.model.js';
-import { Quiz, quizValidator } from '../models/quiz.model.js'
+import { Quiz } from '../models/quiz.model.js'
 import mongoose from 'mongoose';
 import { v2 as cloudinary } from 'cloudinary';
 import Path from 'path'
@@ -65,11 +65,11 @@ export async function getQuizById(req, res, next) {
 
 export async function addQuiz(req, res, next) {
 
-    const result = quizValidator.validate(req.body);
+    // const result = quizValidator.validate(req.body);
 
-    if (result.error) {
-        return next({ message: result.error, status: 409 });
-    }
+    // if (result.error) {
+    //     return next({ message: result.error, status: 409 });
+    // }
 
     let exts_arr = [".png", ".jpg", ".jpeg", ".svg", ".gif"];
 
